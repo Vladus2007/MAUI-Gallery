@@ -207,9 +207,12 @@ public void GalleryPage_DisplaysImages_WhenLoaded()
 - **Error Retry** - Automatic retry with exponential backoff
 - **Offline Support** - Basic offline functionality
 
-## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+## 📞 Support
+
+**If you have any questions or need help with setup:**
+
+📧 **Email: suskovladislav9@gmail.com**
 
 ### Development Workflow
 1. Fork the repository
