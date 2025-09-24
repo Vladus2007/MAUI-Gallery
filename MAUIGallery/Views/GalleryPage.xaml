@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Gallery.Views.GalleryPage"
+             xmlns:viewmodel="clr-namespace:Gallery.ViewModels"
+             xmlns:model="clr-namespace:Gallery.Models"
+             xmlns:converters="clr-namespace:Gallery.Converters"
+             x:DataType="viewmodel:GalleryViewModel"
+             Title="Gallery">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToHeartIconConverter x:Key="BoolToHeartIconConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*, Auto">
+
+        
+        <CollectionView ItemsSource="{Binding Photos}"
+                        RemainingItemsThreshold="5"
+                        RemainingItemsThresholdReachedCommand="{Binding LoadMorePhotosCommand}"
+                        SelectionMode="None"
+                        Grid.Row="0">
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="3" />
+               
+            </CollectionView.ItemsLayout>
+
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Photo">
+                    <Grid HeightRequest="120" 
+                          Padding="2">
+                        
+                        <Image Source="{Binding Urls.Thumb}"
+                               Aspect="AspectFill">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" 
+                                             Binding="{Binding Urls.Thumb}" 
+                                             Value="{x:Null}">
+                                    <Setter Property="Source" Value="placeholder_image.png" />
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+
+                        
+                        <Image Source="{Binding IsFavorite, Converter={StaticResource BoolToHeartIconConverter}}"
+                               Aspect="AspectFit"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               HeightRequest="24"
+                               WidthRequest="24"
+                               Margin="8">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.ToggleFavoriteCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                      CommandParameter="{Binding .}" />
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                        
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.PhotoTappedCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                                  CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            
+            <CollectionView.Footer>
+                <StackLayout Padding="10" HeightRequest="60">
+                    <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                </StackLayout>
+            </CollectionView.Footer>
+
+        </CollectionView>
+
+        
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           HeightRequest="50"
+                           WidthRequest="50"
+                           Grid.Row="0"
+                           IsVisible="{Binding IsBusy}" />
+
+        
+        <Label Text="Failed to load images. Pull to refresh."
+               IsVisible="{Binding HasError}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Grid.Row="0" />
+
+    </Grid>
+</ContentPage>
